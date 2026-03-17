@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'features/image_input/presentation/home_screen.dart';
+import 'features/image_input/presentation/preview_screen.dart';
 import 'features/ocr/presentation/ocr_test_screen.dart';
 import 'features/onboarding/presentation/download_screen.dart';
 
@@ -36,8 +38,43 @@ final _router = GoRouter(
       builder: (context, state) => const DownloadScreen(),
     ),
     GoRoute(
+      path: '/home',
+      builder: (context, state) => const HomeScreen(),
+    ),
+    GoRoute(
+      path: '/camera',
+      builder: (context, state) => const _CameraPlaceholder(),
+    ),
+    GoRoute(
+      path: '/preview',
+      builder: (context, state) {
+        final path = state.uri.queryParameters['path']!;
+        return PreviewScreen(imagePath: Uri.decodeComponent(path));
+      },
+    ),
+    GoRoute(
       path: '/ocr',
-      builder: (context, state) => const OcrTestScreen(),
+      builder: (context, state) {
+        // Accept optional path query parameter for Phase 2 integration.
+        // For now, OcrTestScreen uses its own image picker internally.
+        // Plan 02 will update OcrTestScreen / OcrScreen to accept path.
+        return const OcrTestScreen();
+      },
     ),
   ],
 );
+
+/// Placeholder for camera screen. Plan 02 creates the actual CameraScreen.
+class _CameraPlaceholder extends StatelessWidget {
+  const _CameraPlaceholder();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Camera')),
+      body: const Center(
+        child: Text('Camera screen -- coming in Plan 02'),
+      ),
+    );
+  }
+}

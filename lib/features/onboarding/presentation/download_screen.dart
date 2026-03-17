@@ -39,7 +39,7 @@ class DownloadScreen extends ConsumerWidget {
               DownloadStatus.initializing => _InitializingView(theme: theme),
               DownloadStatus.ready => _ReadyView(
                   theme: theme,
-                  onContinue: () => context.go('/ocr'),
+                  onContinue: () => context.go('/home'),
                 ),
               DownloadStatus.error => _ErrorView(
                   theme: theme,
