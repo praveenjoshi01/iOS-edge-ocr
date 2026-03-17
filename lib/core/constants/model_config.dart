@@ -1,18 +1,26 @@
 import 'dart:io';
 
+import 'package:edge_veda/edge_veda.dart';
 import 'package:path_provider/path_provider.dart';
 
 /// Configuration constants for SmolVLM2 500M model files.
 ///
-/// Uses Q8_0 quantization (437 MB) — officially available from ggml-org,
-/// smaller than Q4_K_M and higher quality. mmproj f16 bridges the vision
-/// encoder to the language model.
+/// Uses Q8_0 quantization (~417 MB) -- officially available from ggml-org,
+/// smaller than Q4_K_M and higher quality. mmproj f16 (~190 MB) bridges the
+/// vision encoder to the language model.
+///
+/// Leverages Edge-Veda's ModelRegistry for verified download URLs and sizes.
 ///
 /// CRITICAL: All files stored in Documents directory, never Caches.
-/// iOS evicts Caches under storage pressure, which would force a ~500 MB
+/// iOS evicts Caches under storage pressure, which would force a ~600 MB
 /// re-download.
 class ModelConfig {
   ModelConfig._();
+
+  // --- Edge-Veda ModelRegistry references ---
+  /// Pre-configured model info from Edge-Veda's ModelRegistry.
+  static const ModelInfo modelInfo = ModelRegistry.smolvlm2_500m;
+  static const ModelInfo mmprojInfo = ModelRegistry.smolvlm2_500m_mmproj;
 
   // --- File names ---
   static const String modelFileName =
@@ -26,14 +34,14 @@ class ModelConfig {
   static const String mmprojUrl =
       'https://huggingface.co/ggml-org/SmolVLM2-500M-Video-Instruct-GGUF/resolve/main/$mmprojFileName';
 
-  // --- Approximate file sizes (bytes) ---
-  // Q8_0 model: ~437 MB
-  static const int modelSizeBytes = 458227712;
-  // mmproj f16: ~50-80 MB (estimate; verify from HuggingFace)
-  // TODO: Verify exact mmproj file size from HuggingFace listing
-  static const int mmprojSizeBytes = 75497472; // ~72 MB estimate
+  // --- File sizes (bytes, from Edge-Veda ModelRegistry) ---
+  /// Q8_0 model: ~417 MB
+  static const int modelSizeBytes = 436808704;
 
-  /// Combined download size for progress display.
+  /// mmproj f16: ~190 MB
+  static const int mmprojSizeBytes = 199470624;
+
+  /// Combined download size for progress display (~607 MB total).
   static int get totalDownloadBytes => modelSizeBytes + mmprojSizeBytes;
 
   // --- Path management ---
