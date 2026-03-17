@@ -7,36 +7,55 @@ import '../../../core/constants/model_config.dart';
 import '../domain/ocr_state.dart';
 import 'ocr_view_model.dart';
 
-/// Minimal test screen for end-to-end OCR validation.
+/// OCR screen for end-to-end text extraction.
 ///
-/// Allows user to pick an image from their photo library and displays
-/// the extracted text from on-device SmolVLM2 inference.
-///
-/// This is a Phase 1 test screen -- functional correctness is the goal.
-/// Phase 2 replaces this with the full image input flow.
-/// Phase 3 adds loading polish and error handling.
+/// Supports two modes:
+/// - **With imagePath** (from PreviewScreen): auto-starts extraction via
+///   [OcrViewModel.extractFromPath] on first build.
+/// - **Without imagePath** (standalone): shows "Pick Image" button for
+///   gallery-based OCR (Phase 1 test mode).
 ///
 /// Architecture: This screen only imports from presentation/ and domain/.
 /// It never imports edge_veda or accesses VisionWorker directly.
 class OcrTestScreen extends ConsumerWidget {
-  const OcrTestScreen({super.key});
+  /// Optional pre-selected image path from PreviewScreen.
+  /// When provided, extraction starts automatically.
+  final String? imagePath;
+
+  const OcrTestScreen({super.key, this.imagePath});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final ocrState = ref.watch(ocrViewModelProvider);
 
+    // Auto-start extraction when arriving from PreviewScreen with a path.
+    // Schedule after build to avoid modifying state during build.
+    if (ocrState is OcrStateIdle && imagePath != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref.read(ocrViewModelProvider.notifier).extractFromPath(imagePath!);
+      });
+    }
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('OCR Test'),
+        title: const Text('OCR'),
       ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: switch (ocrState) {
-            OcrStateIdle() => _IdleView(
-                onPickImage: () =>
-                    ref.read(ocrViewModelProvider.notifier).pickAndExtract(),
-              ),
+            OcrStateIdle() => imagePath != null
+                // When imagePath is set, show loading (extraction will start
+                // on the next frame via addPostFrameCallback above)
+                ? const _StatusView(
+                    message: 'Starting extraction...',
+                    showProgress: true,
+                  )
+                : _IdleView(
+                    onPickImage: () => ref
+                        .read(ocrViewModelProvider.notifier)
+                        .pickAndExtract(),
+                  ),
             OcrStatePickingImage() => const _StatusView(
                 message: 'Opening gallery...',
                 showProgress: false,

@@ -56,10 +56,10 @@ final _router = GoRouter(
     GoRoute(
       path: '/ocr',
       builder: (context, state) {
-        // Accept optional path query parameter for Phase 2 integration.
-        // For now, OcrTestScreen uses its own image picker internally.
-        // Plan 02 will update OcrTestScreen / OcrScreen to accept path.
-        return const OcrTestScreen();
+        final path = state.uri.queryParameters['path'];
+        return OcrTestScreen(
+          imagePath: path != null ? Uri.decodeComponent(path) : null,
+        );
       },
     ),
   ],

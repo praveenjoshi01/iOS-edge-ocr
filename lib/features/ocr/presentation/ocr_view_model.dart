@@ -64,6 +64,31 @@ class OcrViewModel extends _$OcrViewModel {
     }
   }
 
+  /// Extract text from a pre-selected image path.
+  ///
+  /// Called from PreviewScreen after user taps "Extract Text".
+  /// Unlike [pickAndExtract] which opens the gallery, this skips
+  /// the picking step and goes straight to preprocessing + inference.
+  ///
+  /// State transitions: idle -> preprocessing -> inferring -> complete
+  /// On error: any state -> error
+  Future<void> extractFromPath(String imagePath) async {
+    state = const OcrState.preprocessing();
+
+    try {
+      final runtimeNotifier = ref.read(edgeVedaRuntimeProvider.notifier);
+      final ocrService = OcrService(runtime: runtimeNotifier);
+
+      state = const OcrState.inferring();
+
+      final result = await ocrService.extractText(imagePath);
+
+      state = OcrState.complete(result);
+    } catch (e) {
+      state = OcrState.error(e.toString());
+    }
+  }
+
   /// Reset to idle state. Called when user taps "Try Another" or "Retry".
   void reset() {
     state = const OcrState.idle();
