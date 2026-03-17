@@ -5,33 +5,34 @@
 See: .planning/PROJECT.md (updated 2026-03-16)
 
 **Core value:** Instant, private text extraction from any image -- entirely offline on the user's iPhone.
-**Current focus:** Phase 1 complete (human verification pending). Ready for Phase 2.
+**Current focus:** Phase 2 executing. Plan 02-01 complete, starting Plan 02-02.
 
 ## Current Position
 
-Phase: 1 of 3 (Runtime & Core Pipeline) -- COMPLETE
-Plan: 3 of 3 in current phase (all done, 01-03 Task 2 deferred)
-Status: Phase complete, human verification pending
-Last activity: 2026-03-17 -- Phase 1 execution complete, verification report created
+Phase: 2 of 3 (Image Acquisition) -- IN PROGRESS
+Plan: 1 of 2 complete in current phase
+Status: Wave 1 complete, starting Wave 2
+Last activity: 2026-03-17 -- Plan 02-01 executed (foundation, screens, router)
 
-Progress: [##########] 100% (code complete)
+Progress: [#####-----] 50% (1/2 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 3
-- Average duration: 8min
-- Total execution time: 0.4 hours
+- Total plans completed: 4
+- Average duration: 9min
+- Total execution time: 0.6 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-runtime-core-pipeline | 3/3 | 24min | 8min |
+| 02-image-acquisition | 1/2 | 12min | 12min |
 
 **Recent Trend:**
-- Last 5 plans: 11min, 8min, 5min
-- Trend: improving
+- Last 5 plans: 11min, 8min, 5min, 12min
+- Trend: stable
 
 *Updated after each plan completion*
 
@@ -52,6 +53,9 @@ Recent decisions affecting current work:
 - [01-02]: OcrViewModel uses synchronous Notifier since OcrState handles all pipeline states internally
 - [01-03]: Physical device validation deferred -- requires macOS + Xcode + iPhone 13+
 - [01-03]: GitHub Actions CI added for macOS iOS build verification
+- [02-01]: DownloadScreen navigates to /home instead of /ocr after model ready
+- [02-01]: PreviewScreen uses cacheWidth: 1024 for memory safety alongside ~600MB model
+- [02-01]: Services are plain Dart classes, not Riverpod providers
 
 ### Pending Todos
 
@@ -67,5 +71,5 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-03-17
-Stopped at: Phase 1 complete, ready for Phase 2 planning
+Stopped at: Phase 2 Wave 1 complete, starting Wave 2 (Plan 02-02)
 Resume file: None
