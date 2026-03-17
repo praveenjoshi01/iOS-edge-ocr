@@ -58,11 +58,11 @@ Plans:
   2. User receives a clear, actionable error message when extraction fails or returns empty results
   3. User can copy extracted text to clipboard with one tap and sees visual confirmation that it worked
   4. App handles thermal throttling gracefully during sustained use, surfacing state to user rather than silently degrading
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 03-01: Loading states, error handling, and copy-to-clipboard with confirmation
-- [ ] 03-02: Thermal throttling handling and QoS signal surfacing
+- [ ] 03-01-PLAN.md -- ResultScreen with copy-to-clipboard, user-friendly errors, empty-result handling, retry support
+- [ ] 03-02-PLAN.md -- Thermal monitoring via TelemetryService, QoS-gated inference, thermal warning banner
 
 ## Progress
 
