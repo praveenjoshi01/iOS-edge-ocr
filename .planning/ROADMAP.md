@@ -27,12 +27,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. User can provide a test image and receive extracted plain text from on-device SmolVLM2 inference (no network calls)
   3. Inference runs on Metal GPU (useGpu: true) and completes within reasonable time on iPhone 13+
   4. App does not crash or get killed by iOS during inference (memory stays within safe bounds)
-**Plans**: TBD
+**Plans:** 3 plans
 
 Plans:
-- [ ] 01-01: Project scaffold, Edge-Veda integration, and model download flow
-- [ ] 01-02: Image preprocessing, prompt construction, and end-to-end OCR inference
-- [ ] 01-03: Metal GPU validation and memory profiling on device
+- [ ] 01-01-PLAN.md -- Scaffold Flutter project, Edge-Veda integration, model download with progress/resume
+- [ ] 01-02-PLAN.md -- Image preprocessing, prompt construction, and end-to-end OCR inference pipeline
+- [ ] 01-03-PLAN.md -- Diagnostic logging and physical device validation (Metal GPU, memory, ChatTemplateFormat)
 
 ### Phase 2: Image Acquisition
 **Goal**: User can capture or import images from any source and see a preview before extracting text
@@ -71,6 +71,6 @@ Phases execute in numeric order: 1 -> 2 -> 3
 
 | Phase | Plans Complete | Status | Completed |
 |-------|---------------|--------|-----------|
-| 1. Runtime & Core Pipeline | 0/3 | Not started | - |
+| 1. Runtime & Core Pipeline | 0/3 | Planned | - |
 | 2. Image Acquisition | 0/2 | Not started | - |
 | 3. Complete User Loop | 0/2 | Not started | - |
