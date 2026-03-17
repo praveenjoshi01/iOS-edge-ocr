@@ -5,6 +5,10 @@ import 'package:permission_handler/permission_handler.dart';
 /// Provides point-of-use permission requests (not upfront) and handles
 /// the iOS "limited photos" access mode as an acceptable grant.
 class PermissionService {
+  /// Expose Permission constants for callers that need isPermanentlyDenied.
+  Permission get cameraPermission => Permission.camera;
+  Permission get photosPermission => Permission.photos;
+
   /// Request camera permission. Returns true if granted.
   Future<bool> requestCamera() async {
     final status = await Permission.camera.request();
