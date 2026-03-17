@@ -43,11 +43,11 @@ Plans:
   2. User can select an existing image from their photo library and preview it before extraction
   3. User can import an image or PDF from the iOS Files app and preview it before extraction
   4. All three input paths feed into the OCR pipeline from Phase 1 and produce extracted text
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 02-01: Camera capture with viewfinder and image preview screen
-- [ ] 02-02: Photo library import, Files app import, and unified input flow
+- [ ] 02-01-PLAN.md -- Foundation: dependencies, iOS config, domain models, services, HomeScreen, PreviewScreen, router
+- [ ] 02-02-PLAN.md -- Camera viewfinder, photo library import, Files app import, end-to-end wiring
 
 ### Phase 3: Complete User Loop
 **Goal**: User experiences a polished capture-extract-copy workflow with clear feedback at every step
