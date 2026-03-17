@@ -82,25 +82,25 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| INPUT-01 | — | Pending |
-| INPUT-02 | — | Pending |
-| INPUT-03 | — | Pending |
-| INPUT-04 | — | Pending |
-| OCR-01 | — | Pending |
-| OCR-02 | — | Pending |
-| OCR-03 | — | Pending |
-| OCR-04 | — | Pending |
-| OCR-05 | — | Pending |
-| OUT-01 | — | Pending |
-| RT-01 | — | Pending |
-| RT-02 | — | Pending |
-| RT-03 | — | Pending |
+| INPUT-01 | Phase 2 | Pending |
+| INPUT-02 | Phase 2 | Pending |
+| INPUT-03 | Phase 2 | Pending |
+| INPUT-04 | Phase 2 | Pending |
+| OCR-01 | Phase 1 | Pending |
+| OCR-02 | Phase 1 | Pending |
+| OCR-03 | Phase 3 | Pending |
+| OCR-04 | Phase 3 | Pending |
+| OCR-05 | Phase 1 | Pending |
+| OUT-01 | Phase 3 | Pending |
+| RT-01 | Phase 1 | Pending |
+| RT-02 | Phase 1 | Pending |
+| RT-03 | Phase 3 | Pending |
 
 **Coverage:**
 - v1 requirements: 13 total
-- Mapped to phases: 0
-- Unmapped: 13 ⚠️
+- Mapped to phases: 13
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-16*
-*Last updated: 2026-03-16 after initial definition*
+*Last updated: 2026-03-16 after roadmap creation*
