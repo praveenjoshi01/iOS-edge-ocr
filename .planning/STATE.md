@@ -5,32 +5,32 @@
 See: .planning/PROJECT.md (updated 2026-03-16)
 
 **Core value:** Instant, private text extraction from any image -- entirely offline on the user's iPhone.
-**Current focus:** Phase 1: Runtime & Core Pipeline
+**Current focus:** Phase 1 complete (human verification pending). Ready for Phase 2.
 
 ## Current Position
 
-Phase: 1 of 3 (Runtime & Core Pipeline)
-Plan: 2 of 3 in current phase
-Status: Executing
-Last activity: 2026-03-17 -- Executing Plan 03 (device validation) - Task 1 done, checkpoint pending
+Phase: 1 of 3 (Runtime & Core Pipeline) -- COMPLETE
+Plan: 3 of 3 in current phase (all done, 01-03 Task 2 deferred)
+Status: Phase complete, human verification pending
+Last activity: 2026-03-17 -- Phase 1 execution complete, verification report created
 
-Progress: [######----] 67%
+Progress: [##########] 100% (code complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 2
-- Average duration: 10min
-- Total execution time: 0.3 hours
+- Total plans completed: 3
+- Average duration: 8min
+- Total execution time: 0.4 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01-runtime-core-pipeline | 2/3 | 19min | 10min |
+| 01-runtime-core-pipeline | 3/3 | 24min | 8min |
 
 **Recent Trend:**
-- Last 5 plans: 11min, 8min
+- Last 5 plans: 11min, 8min, 5min
 - Trend: improving
 
 *Updated after each plan completion*
@@ -50,20 +50,22 @@ Recent decisions affecting current work:
 - [01-02]: VisionResultResponse uses .description field not .text -- verified from Edge-Veda source
 - [01-02]: OcrResult requires sealed class keyword for freezed 3.x compatibility
 - [01-02]: OcrViewModel uses synchronous Notifier since OcrState handles all pipeline states internally
+- [01-03]: Physical device validation deferred -- requires macOS + Xcode + iPhone 13+
+- [01-03]: GitHub Actions CI added for macOS iOS build verification
 
 ### Pending Todos
 
-None yet.
+- Physical device validation of Phase 1 (6 checks) when macOS + iPhone 13+ available
 
 ### Blockers/Concerns
 
 - [Research]: SmolVLM2 500M scores 61% on OCRBench -- manage user expectations, never present output as guaranteed-accurate
 - [Research]: 607 MB model download on first launch requires dedicated onboarding UX with progress and resume
 - [Research]: Flutter camera plugin has known memory leak issues (#29586, #97941) -- test 20+ consecutive captures on device
-- [01-01]: iOS build verification deferred -- flutter build ios requires macOS; static analysis passes on Windows
+- [01-03]: Physical device validation deferred -- 6 runtime checks need macOS + Xcode + iPhone 13+
 
 ## Session Continuity
 
 Last session: 2026-03-17
-Stopped at: Executing 01-03-PLAN.md - Task 1 complete, awaiting Task 2 checkpoint (physical device validation)
+Stopped at: Phase 1 complete, ready for Phase 2 planning
 Resume file: None

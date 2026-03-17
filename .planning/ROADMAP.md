@@ -12,7 +12,7 @@ This roadmap delivers an offline iOS OCR app in three phases, ordered by technic
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Runtime & Core Pipeline** - Edge-Veda + SmolVLM2 inference working on-device with Metal GPU
+- [x] **Phase 1: Runtime & Core Pipeline** - Edge-Veda + SmolVLM2 inference working on-device with Metal GPU (human verification pending)
 - [ ] **Phase 2: Image Acquisition** - Camera, photo library, and Files app feeding the OCR pipeline
 - [ ] **Phase 3: Complete User Loop** - Copy output, loading feedback, error handling, and thermal resilience
 
@@ -30,9 +30,9 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans:** 3 plans
 
 Plans:
-- [ ] 01-01-PLAN.md -- Scaffold Flutter project, Edge-Veda integration, model download with progress/resume
-- [ ] 01-02-PLAN.md -- Image preprocessing, prompt construction, and end-to-end OCR inference pipeline
-- [ ] 01-03-PLAN.md -- Diagnostic logging and physical device validation (Metal GPU, memory, ChatTemplateFormat)
+- [x] 01-01-PLAN.md -- Scaffold Flutter project, Edge-Veda integration, model download with progress/resume
+- [x] 01-02-PLAN.md -- Image preprocessing, prompt construction, and end-to-end OCR inference pipeline
+- [x] 01-03-PLAN.md -- Diagnostic logging and physical device validation (Task 1 done, Task 2 deferred: needs macOS + iPhone)
 
 ### Phase 2: Image Acquisition
 **Goal**: User can capture or import images from any source and see a preview before extracting text
@@ -71,6 +71,6 @@ Phases execute in numeric order: 1 -> 2 -> 3
 
 | Phase | Plans Complete | Status | Completed |
 |-------|---------------|--------|-----------|
-| 1. Runtime & Core Pipeline | 0/3 | Planned | - |
+| 1. Runtime & Core Pipeline | 3/3 | ✓ Complete (human verification pending) | 2026-03-17 |
 | 2. Image Acquisition | 0/2 | Not started | - |
 | 3. Complete User Loop | 0/2 | Not started | - |
