@@ -1,3 +1,5 @@
+import 'dart:developer' as dev;
+
 import '../../../runtime/edge_veda_runtime.dart';
 import '../domain/ocr_result.dart';
 import 'image_preprocessor.dart';
@@ -39,13 +41,33 @@ class OcrService {
   Future<OcrResult> extractText(String imagePath) async {
     final stopwatch = Stopwatch()..start();
 
+    dev.log(
+      '[OcrService] Starting OCR pipeline for: $imagePath',
+      name: 'OCR',
+    );
+
     // 1. Preprocess image in background isolate
+    final preprocessStopwatch = Stopwatch()..start();
     final processed = await ImagePreprocessor.prepare(imagePath);
+    preprocessStopwatch.stop();
+
+    final expectedRgbSize = processed.width * processed.height * 3;
+    dev.log(
+      '[OcrService] Preprocessing complete:\n'
+      '  Time: ${preprocessStopwatch.elapsedMilliseconds}ms\n'
+      '  Dimensions: ${processed.width}x${processed.height}\n'
+      '  RGB bytes: ${processed.rgbBytes.length} (expected: $expectedRgbSize, match: ${processed.rgbBytes.length == expectedRgbSize})\n'
+      '  Longest edge <= 1024: ${processed.width <= 1024 && processed.height <= 1024}',
+      name: 'OCR',
+    );
 
     // 2. Build prompt
     final prompt = _promptBuilder.buildPlainText();
+    dev.log('[OcrService] Prompt: "$prompt"', name: 'OCR');
 
     // 3. Run inference through Edge-Veda VisionWorker
+    dev.log('[OcrService] Starting inference...', name: 'OCR');
+    final inferenceStopwatch = Stopwatch()..start();
     final result = await _runtime.describeFrame(
       processed.rgbBytes,
       processed.width,
@@ -53,12 +75,22 @@ class OcrService {
       prompt: prompt,
       maxTokens: 1024,
     );
+    inferenceStopwatch.stop();
 
     stopwatch.stop();
 
     // 4. Post-process result text
     // VisionResultResponse uses 'description' field, not 'text'
     final cleanText = _postProcess(result.description);
+
+    dev.log(
+      '[OcrService] Inference complete:\n'
+      '  Inference time: ${inferenceStopwatch.elapsedMilliseconds}ms\n'
+      '  Total pipeline time: ${stopwatch.elapsedMilliseconds}ms\n'
+      '  Output length: ${cleanText.length} chars\n'
+      '  First 200 chars: "${cleanText.length > 200 ? cleanText.substring(0, 200) : cleanText}"',
+      name: 'OCR',
+    );
 
     // 5. Return structured result
     return OcrResult(

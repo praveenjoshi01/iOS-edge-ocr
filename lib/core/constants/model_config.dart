@@ -29,16 +29,25 @@ class ModelConfig {
       'mmproj-SmolVLM2-500M-Video-Instruct-f16.gguf';
 
   // --- HuggingFace download URLs (resolve/main for direct download) ---
+  // Uses /resolve/main/ format which provides direct file download.
+  // Alternative format /blob/main/ returns HTML page (wrong for downloads).
+  // Edge-Veda ModelManager uses ModelRegistry URLs, so these are backup references.
   static const String modelUrl =
       'https://huggingface.co/ggml-org/SmolVLM2-500M-Video-Instruct-GGUF/resolve/main/$modelFileName';
   static const String mmprojUrl =
       'https://huggingface.co/ggml-org/SmolVLM2-500M-Video-Instruct-GGUF/resolve/main/$mmprojFileName';
 
   // --- File sizes (bytes, from Edge-Veda ModelRegistry) ---
-  /// Q8_0 model: ~417 MB
+  // These are the exact expected sizes after successful download.
+  // If file size on disk does not match, the download may be corrupt/incomplete.
+  //
+  // Q8_0 model: 436,808,704 bytes (~416.6 MB)
   static const int modelSizeBytes = 436808704;
 
-  /// mmproj f16: ~190 MB
+  // mmproj f16: 199,470,624 bytes (~190.2 MB)
+  // TODO: Verify mmproj file name on device -- if Edge-Veda ModelRegistry
+  // uses a different filename than expected, download may succeed but
+  // VisionWorker init will fail to find the file.
   static const int mmprojSizeBytes = 199470624;
 
   /// Combined download size for progress display (~607 MB total).

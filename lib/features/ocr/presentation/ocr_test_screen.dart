@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/constants/model_config.dart';
 import '../domain/ocr_state.dart';
 import 'ocr_view_model.dart';
 
@@ -142,8 +145,8 @@ class _StatusView extends StatelessWidget {
   }
 }
 
-/// Complete state: scrollable extracted text with metadata.
-class _CompleteView extends StatelessWidget {
+/// Complete state: scrollable extracted text with metadata and debug info.
+class _CompleteView extends StatefulWidget {
   final String text;
   final int processingTimeMs;
   final int imageWidth;
@@ -157,6 +160,13 @@ class _CompleteView extends StatelessWidget {
     required this.imageHeight,
     required this.onReset,
   });
+
+  @override
+  State<_CompleteView> createState() => _CompleteViewState();
+}
+
+class _CompleteViewState extends State<_CompleteView> {
+  bool _showDebugInfo = false;
 
   @override
   Widget build(BuildContext context) {
@@ -181,7 +191,7 @@ class _CompleteView extends StatelessWidget {
               ),
               const SizedBox(width: 4),
               Text(
-                '${processingTimeMs}ms',
+                '${widget.processingTimeMs}ms',
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: theme.colorScheme.onSurfaceVariant,
                 ),
@@ -194,14 +204,36 @@ class _CompleteView extends StatelessWidget {
               ),
               const SizedBox(width: 4),
               Text(
-                '${imageWidth}x$imageHeight',
+                '${widget.imageWidth}x${widget.imageHeight}',
                 style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+              const Spacer(),
+              // Debug info toggle
+              GestureDetector(
+                onTap: () => setState(() => _showDebugInfo = !_showDebugInfo),
+                child: Icon(
+                  _showDebugInfo ? Icons.bug_report : Icons.bug_report_outlined,
+                  size: 18,
                   color: theme.colorScheme.onSurfaceVariant,
                 ),
               ),
             ],
           ),
         ),
+
+        // Collapsible debug info section
+        if (_showDebugInfo) ...[
+          const SizedBox(height: 8),
+          _DebugInfoPanel(
+            processingTimeMs: widget.processingTimeMs,
+            imageWidth: widget.imageWidth,
+            imageHeight: widget.imageHeight,
+            textLength: widget.text.length,
+          ),
+        ],
+
         const SizedBox(height: 12),
 
         // Extracted text (scrollable)
@@ -216,7 +248,7 @@ class _CompleteView extends StatelessWidget {
             ),
             child: SingleChildScrollView(
               child: SelectableText(
-                text.isEmpty ? '(No text extracted)' : text,
+                widget.text.isEmpty ? '(No text extracted)' : widget.text,
                 style: theme.textTheme.bodyLarge?.copyWith(
                   fontFamily: 'monospace',
                   height: 1.5,
@@ -229,12 +261,115 @@ class _CompleteView extends StatelessWidget {
 
         // Try Another button
         FilledButton.icon(
-          onPressed: onReset,
+          onPressed: widget.onReset,
           icon: const Icon(Icons.refresh),
           label: const Text('Try Another'),
         ),
       ],
     );
+  }
+}
+
+/// Debug info panel showing model file status and processing details.
+///
+/// Checks model files on disk and displays diagnostic data useful for
+/// validating the OCR pipeline on a physical device.
+class _DebugInfoPanel extends StatelessWidget {
+  final int processingTimeMs;
+  final int imageWidth;
+  final int imageHeight;
+  final int textLength;
+
+  const _DebugInfoPanel({
+    required this.processingTimeMs,
+    required this.imageWidth,
+    required this.imageHeight,
+    required this.textLength,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return FutureBuilder<Map<String, String>>(
+      future: _gatherDebugInfo(),
+      builder: (context, snapshot) {
+        final info = snapshot.data ?? {'status': 'Loading...'};
+
+        return Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.surfaceContainerLow,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5),
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Debug Info',
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              ...info.entries.map((e) => Padding(
+                    padding: const EdgeInsets.only(bottom: 2),
+                    child: Text(
+                      '${e.key}: ${e.value}',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        fontFamily: 'monospace',
+                        fontSize: 11,
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  )),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<Map<String, String>> _gatherDebugInfo() async {
+    final info = <String, String>{};
+
+    // Processing metrics
+    info['Pipeline time'] = '${processingTimeMs}ms';
+    info['Image dims'] = '${imageWidth}x$imageHeight';
+    info['RGB bytes'] = '${imageWidth * imageHeight * 3}';
+    info['Output chars'] = '$textLength';
+
+    // Model file status
+    try {
+      final modelPath = await ModelConfig.modelPath;
+      final mmprojPath = await ModelConfig.mmprojPath;
+      final modelFile = File(modelPath);
+      final mmprojFile = File(mmprojPath);
+
+      if (await modelFile.exists()) {
+        final size = await modelFile.length();
+        info['Model file'] =
+            '${(size / 1024 / 1024).toStringAsFixed(1)} MB (${size == ModelConfig.modelSizeBytes ? "OK" : "SIZE MISMATCH"})';
+      } else {
+        info['Model file'] = 'MISSING';
+      }
+
+      if (await mmprojFile.exists()) {
+        final size = await mmprojFile.length();
+        info['Mmproj file'] =
+            '${(size / 1024 / 1024).toStringAsFixed(1)} MB (${size == ModelConfig.mmprojSizeBytes ? "OK" : "SIZE MISMATCH"})';
+      } else {
+        info['Mmproj file'] = 'MISSING';
+      }
+    } catch (e) {
+      info['File check'] = 'Error: $e';
+    }
+
+    return info;
   }
 }
 

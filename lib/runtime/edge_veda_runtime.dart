@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:developer' as dev;
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:edge_veda/edge_veda.dart';
@@ -131,16 +133,66 @@ class EdgeVedaRuntime extends _$EdgeVedaRuntime {
   /// Initialize the VisionWorker with downloaded model files.
   ///
   /// Spawns a persistent worker isolate, loads the model + mmproj,
-  /// and transitions to ready state.
+  /// and transitions to ready state. Includes diagnostic logging for
+  /// device validation (timing, file sizes, parameters).
   Future<RuntimeState> _initializeWorker() async {
     state = const AsyncData(RuntimeState.initializing());
+    final initStopwatch = Stopwatch()..start();
 
     try {
       final modelPath = await ModelConfig.modelPath;
       final mmprojPath = await ModelConfig.mmprojPath;
 
+      // Log model file sizes on disk before init (verify download integrity)
+      final modelFile = File(modelPath);
+      final mmprojFile = File(mmprojPath);
+      final modelExists = await modelFile.exists();
+      final mmprojExists = await mmprojFile.exists();
+      final modelSize = modelExists ? await modelFile.length() : 0;
+      final mmprojSize = mmprojExists ? await mmprojFile.length() : 0;
+
+      dev.log(
+        '[EdgeVedaRuntime] Model files on disk:\n'
+        '  model: $modelPath (exists=$modelExists, ${(modelSize / 1024 / 1024).toStringAsFixed(1)} MB)\n'
+        '  mmproj: $mmprojPath (exists=$mmprojExists, ${(mmprojSize / 1024 / 1024).toStringAsFixed(1)} MB)\n'
+        '  Expected: model=${(ModelConfig.modelSizeBytes / 1024 / 1024).toStringAsFixed(1)} MB, '
+        'mmproj=${(ModelConfig.mmprojSizeBytes / 1024 / 1024).toStringAsFixed(1)} MB',
+        name: 'Runtime',
+      );
+
+      if (!modelExists || !mmprojExists) {
+        dev.log(
+          '[EdgeVedaRuntime] FATAL: Missing model file(s). Cannot initialize.',
+          name: 'Runtime',
+        );
+        return RuntimeState.error(
+          'Model files missing: model=$modelExists, mmproj=$mmprojExists',
+        );
+      }
+
+      // Spawn VisionWorker isolate
+      dev.log('[EdgeVedaRuntime] Spawning VisionWorker...', name: 'Runtime');
+      final spawnStopwatch = Stopwatch()..start();
       _worker = VisionWorker();
       await _worker!.spawn();
+      spawnStopwatch.stop();
+      dev.log(
+        '[EdgeVedaRuntime] VisionWorker.spawn() completed in '
+        '${spawnStopwatch.elapsedMilliseconds}ms',
+        name: 'Runtime',
+      );
+
+      // Initialize vision model
+      dev.log(
+        '[EdgeVedaRuntime] Calling initVision:\n'
+        '  modelPath: $modelPath\n'
+        '  mmprojPath: $mmprojPath\n'
+        '  numThreads: 4\n'
+        '  contextSize: 2048\n'
+        '  useGpu: true',
+        name: 'Runtime',
+      );
+      final visionStopwatch = Stopwatch()..start();
       await _worker!.initVision(
         modelPath: modelPath,
         mmprojPath: mmprojPath,
@@ -148,9 +200,29 @@ class EdgeVedaRuntime extends _$EdgeVedaRuntime {
         contextSize: 2048,
         useGpu: true,
       );
+      visionStopwatch.stop();
+
+      initStopwatch.stop();
+      dev.log(
+        '[EdgeVedaRuntime] initVision() completed in '
+        '${visionStopwatch.elapsedMilliseconds}ms\n'
+        '  Total init time: ${initStopwatch.elapsedMilliseconds}ms\n'
+        '  GPU enabled: true',
+        name: 'Runtime',
+      );
 
       return const RuntimeState.ready();
     } catch (e) {
+      initStopwatch.stop();
+      dev.log(
+        '[EdgeVedaRuntime] INIT FAILED after ${initStopwatch.elapsedMilliseconds}ms:\n'
+        '  Error: ${e.toString()}\n'
+        '  This may indicate wrong ChatTemplateFormat or corrupt model files.\n'
+        '  Check if output is garbage (random chars, repeated tokens).',
+        name: 'Runtime',
+        level: 1000,
+      );
+      _worker?.dispose();
       _worker = null;
       return RuntimeState.error('Failed to initialize model: ${e.toString()}');
     }
