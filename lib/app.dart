@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'features/ocr/presentation/ocr_test_screen.dart';
 import 'features/onboarding/presentation/download_screen.dart';
 
 /// Root application widget with Material 3 theme and go_router navigation.
@@ -36,26 +37,7 @@ final _router = GoRouter(
     ),
     GoRoute(
       path: '/ocr',
-      builder: (context, state) => const _OcrPlaceholderScreen(),
+      builder: (context, state) => const OcrTestScreen(),
     ),
   ],
 );
-
-/// Placeholder screen for OCR functionality.
-/// Will be replaced in Phase 1 Plan 02.
-class _OcrPlaceholderScreen extends StatelessWidget {
-  const _OcrPlaceholderScreen();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Edge OCR')),
-      body: const Center(
-        child: Text(
-          'OCR Ready - Phase 1 Plan 02 will build this',
-          style: TextStyle(fontSize: 18),
-        ),
-      ),
-    );
-  }
-}
