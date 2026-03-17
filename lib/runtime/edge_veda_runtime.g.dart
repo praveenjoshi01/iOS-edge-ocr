@@ -63,7 +63,7 @@ final class EdgeVedaRuntimeProvider
   EdgeVedaRuntime create() => EdgeVedaRuntime();
 }
 
-String _$edgeVedaRuntimeHash() => r'00d4eb9509637e7da0ae16bd8f713b7d13ae4a72';
+String _$edgeVedaRuntimeHash() => r'41dcf02913dc28a874568760a88a2d5e59bcac5d';
 
 /// Manages the Edge-Veda VisionWorker lifecycle as a Riverpod AsyncNotifier.
 ///
