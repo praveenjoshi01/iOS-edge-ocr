@@ -13,7 +13,7 @@ This roadmap delivers an offline iOS OCR app in three phases, ordered by technic
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Runtime & Core Pipeline** - Edge-Veda + SmolVLM2 inference working on-device with Metal GPU (human verification pending)
-- [ ] **Phase 2: Image Acquisition** - Camera, photo library, and Files app feeding the OCR pipeline
+- [x] **Phase 2: Image Acquisition** - Camera, photo library, and Files app feeding the OCR pipeline (human verification pending)
 - [ ] **Phase 3: Complete User Loop** - Copy output, loading feedback, error handling, and thermal resilience
 
 ## Phase Details
@@ -46,8 +46,8 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 02-01-PLAN.md -- Foundation: dependencies, iOS config, domain models, services, HomeScreen, PreviewScreen, router
-- [ ] 02-02-PLAN.md -- Camera viewfinder, photo library import, Files app import, end-to-end wiring
+- [x] 02-01-PLAN.md -- Foundation: dependencies, iOS config, domain models, services, HomeScreen, PreviewScreen, router
+- [x] 02-02-PLAN.md -- Camera viewfinder, photo library import, Files app import, end-to-end wiring
 
 ### Phase 3: Complete User Loop
 **Goal**: User experiences a polished capture-extract-copy workflow with clear feedback at every step
@@ -72,5 +72,5 @@ Phases execute in numeric order: 1 -> 2 -> 3
 | Phase | Plans Complete | Status | Completed |
 |-------|---------------|--------|-----------|
 | 1. Runtime & Core Pipeline | 3/3 | ✓ Complete (human verification pending) | 2026-03-17 |
-| 2. Image Acquisition | 0/2 | Not started | - |
+| 2. Image Acquisition | 2/2 | ✓ Complete (human verification pending) | 2026-03-17 |
 | 3. Complete User Loop | 0/2 | Not started | - |
