@@ -5,34 +5,34 @@
 See: .planning/PROJECT.md (updated 2026-03-16)
 
 **Core value:** Instant, private text extraction from any image -- entirely offline on the user's iPhone.
-**Current focus:** Phase 2 executing. Plan 02-01 complete, starting Plan 02-02.
+**Current focus:** Phase 2 complete. All image acquisition flows wired. Ready for Phase 3.
 
 ## Current Position
 
-Phase: 2 of 3 (Image Acquisition) -- IN PROGRESS
-Plan: 1 of 2 complete in current phase
-Status: Wave 1 complete, starting Wave 2
-Last activity: 2026-03-17 -- Plan 02-01 executed (foundation, screens, router)
+Phase: 2 of 3 (Image Acquisition) -- COMPLETE
+Plan: 2 of 2 complete in current phase
+Status: Phase 2 complete, ready for Phase 3 (User Loop)
+Last activity: 2026-03-17 -- Plan 02-02 executed (camera, gallery, files, OCR wiring)
 
-Progress: [#####-----] 50% (1/2 plans)
+Progress: [##########] 100% (2/2 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 4
+- Total plans completed: 5
 - Average duration: 9min
-- Total execution time: 0.6 hours
+- Total execution time: 0.7 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-runtime-core-pipeline | 3/3 | 24min | 8min |
-| 02-image-acquisition | 1/2 | 12min | 12min |
+| 02-image-acquisition | 2/2 | 19min | 10min |
 
 **Recent Trend:**
-- Last 5 plans: 11min, 8min, 5min, 12min
-- Trend: stable
+- Last 5 plans: 11min, 8min, 5min, 12min, 7min
+- Trend: stable/improving
 
 *Updated after each plan completion*
 
@@ -56,6 +56,10 @@ Recent decisions affecting current work:
 - [02-01]: DownloadScreen navigates to /home instead of /ocr after model ready
 - [02-01]: PreviewScreen uses cacheWidth: 1024 for memory safety alongside ~600MB model
 - [02-01]: Services are plain Dart classes, not Riverpod providers
+- [02-02]: Camera uses ResolutionPreset.high (720p) -- ImagePreprocessor resizes to 1024px anyway
+- [02-02]: HomeScreen converted to ConsumerStatefulWidget for async import state management
+- [02-02]: OcrTestScreen uses addPostFrameCallback to auto-start extraction without state-during-build
+- [02-02]: PermissionService exposes cameraPermission/photosPermission getters for abstraction
 
 ### Pending Todos
 
@@ -71,5 +75,5 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-03-17
-Stopped at: Phase 2 Wave 1 complete, starting Wave 2 (Plan 02-02)
+Stopped at: Phase 2 complete. Ready for Phase 3 (User Loop).
 Resume file: None
