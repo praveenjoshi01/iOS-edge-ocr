@@ -29,32 +29,6 @@ jobs:
       - name: Analyze
         run: flutter analyze
 
-  build-ios:
-    name: iOS Native Build
-    runs-on: macos-15
-    timeout-minutes: 30
-    needs: analyze
-    # EdgeVedaCore pod not on public CocoaPods trunk — needs Mac with
-    # local pod cache from prior pod install. Build will pass once
-    # EdgeVedaCore podspec source is configured.
-    continue-on-error: true
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-          cache: true
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Generate code (Riverpod, Freezed)
-        run: dart run build_runner build --delete-conflicting-outputs
-
-      - name: Install CocoaPods
-        run: cd ios && pod install --repo-update
-
-      - name: Build iOS (no codesign)
-        run: flutter build ios --no-codesign --release
+  # NOTE: iOS native build requires EdgeVedaCore, a private pod not on
+  # public CocoaPods trunk. Native build must be done locally on a Mac
+  # with edge_veda installed. CI validates code quality via analyze job.
