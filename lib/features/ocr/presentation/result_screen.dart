@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/constants/model_config.dart';
+import '../../../runtime/thermal_monitor.dart';
 import '../domain/ocr_result.dart';
 import '../domain/ocr_state.dart';
 import 'ocr_view_model.dart';
@@ -71,6 +72,9 @@ class ResultScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final ocrState = ref.watch(ocrViewModelProvider);
+    final thermalAsync = ref.watch(thermalStateProvider);
+    final thermalState = thermalAsync.value ?? 0;
+    final theme = Theme.of(context);
 
     // Auto-start extraction on first build (idle state + imagePath).
     // Schedule after build to avoid modifying state during build.
@@ -84,54 +88,83 @@ class ResultScreen extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('OCR'),
       ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: switch (ocrState) {
-            OcrStateIdle() => const _StatusView(
-                message: 'Starting extraction...',
-                subtitle: null,
-                showProgress: true,
+      body: Column(
+        children: [
+          // Thermal warning banner (conditionally shown)
+          if (shouldWarnUser(thermalState))
+            MaterialBanner(
+              content: Text(
+                thermalMessage(thermalState),
+                style: TextStyle(
+                  color: thermalState >= 3
+                      ? theme.colorScheme.onError
+                      : theme.colorScheme.onErrorContainer,
+                ),
               ),
-            OcrStatePickingImage() => const _StatusView(
-                message: 'Opening gallery...',
-                subtitle: null,
-                showProgress: false,
+              leading: Icon(
+                Icons.thermostat,
+                color: thermalState >= 3
+                    ? theme.colorScheme.onError
+                    : theme.colorScheme.onErrorContainer,
               ),
-            OcrStatePreprocessing() => const _StatusView(
-                message: 'Preparing image...',
-                subtitle: null,
-                showProgress: true,
-              ),
-            OcrStateInferring() => const _StatusView(
-                message: 'Extracting text...',
-                subtitle: 'This may take a few seconds',
-                showProgress: true,
-              ),
-            OcrStateComplete(:final result) =>
-              result.text.trim().isEmpty
-                  ? _NoTextFoundView(
-                      processingTimeMs: result.processingTimeMs,
+              backgroundColor: thermalState >= 3
+                  ? theme.colorScheme.error
+                  : theme.colorScheme.errorContainer,
+              actions: const [SizedBox.shrink()],
+            ),
+          // Existing content (Expanded to fill remaining space)
+          Expanded(
+            child: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: switch (ocrState) {
+                  OcrStateIdle() => const _StatusView(
+                      message: 'Starting extraction...',
+                      subtitle: null,
+                      showProgress: true,
+                    ),
+                  OcrStatePickingImage() => const _StatusView(
+                      message: 'Opening gallery...',
+                      subtitle: null,
+                      showProgress: false,
+                    ),
+                  OcrStatePreprocessing() => const _StatusView(
+                      message: 'Preparing image...',
+                      subtitle: null,
+                      showProgress: true,
+                    ),
+                  OcrStateInferring() => const _StatusView(
+                      message: 'Extracting text...',
+                      subtitle: 'This may take a few seconds',
+                      showProgress: true,
+                    ),
+                  OcrStateComplete(:final result) =>
+                    result.text.trim().isEmpty
+                        ? _NoTextFoundView(
+                            processingTimeMs: result.processingTimeMs,
+                            onRetry: () => ref
+                                .read(ocrViewModelProvider.notifier)
+                                .extractFromPath(imagePath),
+                            onTryDifferent: () => context.go('/home'),
+                          )
+                        : _CompleteView(
+                            result: result,
+                            onCopy: () =>
+                                _copyToClipboard(context, result.text),
+                            onTryDifferent: () => context.go('/home'),
+                          ),
+                  OcrStateError(:final message) => _ErrorView(
+                      message: message,
                       onRetry: () => ref
                           .read(ocrViewModelProvider.notifier)
                           .extractFromPath(imagePath),
                       onTryDifferent: () => context.go('/home'),
-                    )
-                  : _CompleteView(
-                      result: result,
-                      onCopy: () =>
-                          _copyToClipboard(context, result.text),
-                      onTryDifferent: () => context.go('/home'),
                     ),
-            OcrStateError(:final message) => _ErrorView(
-                message: message,
-                onRetry: () => ref
-                    .read(ocrViewModelProvider.notifier)
-                    .extractFromPath(imagePath),
-                onTryDifferent: () => context.go('/home'),
+                },
               ),
-          },
-        ),
+            ),
+          ),
+        ],
       ),
     );
   }
