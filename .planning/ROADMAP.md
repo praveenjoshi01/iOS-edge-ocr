@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Runtime & Core Pipeline** - Edge-Veda + SmolVLM2 inference working on-device with Metal GPU (human verification pending)
 - [x] **Phase 2: Image Acquisition** - Camera, photo library, and Files app feeding the OCR pipeline (human verification pending)
-- [ ] **Phase 3: Complete User Loop** - Copy output, loading feedback, error handling, and thermal resilience
+- [x] **Phase 3: Complete User Loop** - Copy output, loading feedback, error handling, and thermal resilience (human verification pending)
 
 ## Phase Details
 
@@ -61,8 +61,8 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 03-01-PLAN.md -- ResultScreen with copy-to-clipboard, user-friendly errors, empty-result handling, retry support
-- [ ] 03-02-PLAN.md -- Thermal monitoring via TelemetryService, QoS-gated inference, thermal warning banner
+- [x] 03-01-PLAN.md -- ResultScreen with copy-to-clipboard, user-friendly errors, empty-result handling, retry support
+- [x] 03-02-PLAN.md -- Thermal monitoring via TelemetryService, QoS-gated inference, thermal warning banner
 
 ## Progress
 
@@ -73,4 +73,4 @@ Phases execute in numeric order: 1 -> 2 -> 3
 |-------|---------------|--------|-----------|
 | 1. Runtime & Core Pipeline | 3/3 | ✓ Complete (human verification pending) | 2026-03-17 |
 | 2. Image Acquisition | 2/2 | ✓ Complete (human verification pending) | 2026-03-17 |
-| 3. Complete User Loop | 0/2 | Not started | - |
+| 3. Complete User Loop | 2/2 | ✓ Complete (human verification pending) | 2026-03-18 |
