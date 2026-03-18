@@ -62,7 +62,7 @@ final class OcrViewModelProvider
   }
 }
 
-String _$ocrViewModelHash() => r'e0ee2e47fa45163db57da5d1e691758a3c8f8c27';
+String _$ocrViewModelHash() => r'9b1cb90db757b320e0c8d9268644075ee2d4d296';
 
 /// Manages the OCR pipeline lifecycle as a Riverpod Notifier.
 ///
