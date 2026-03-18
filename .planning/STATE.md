@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-03-16)
 
 **Core value:** Instant, private text extraction from any image -- entirely offline on the user's iPhone.
-**Current focus:** Phase 3 in progress. ResultScreen polished with copy, error handling, empty-result state.
+**Current focus:** All 3 phases complete. Thermal monitoring, inference gating, and warning UI integrated.
 
 ## Current Position
 
 Phase: 3 of 3 (Complete User Loop)
-Plan: 1 of 2 complete in current phase
-Status: Executing Phase 3 -- Plan 03-01 complete, Plan 03-02 next
-Last activity: 2026-03-18 -- Plan 03-01 executed (ResultScreen with copy, errors, empty-result, retry)
+Plan: 2 of 2 complete in current phase
+Status: Phase 3 complete -- all plans executed
+Last activity: 2026-03-18 -- Plan 03-02 executed (thermal monitoring, inference gating, warning banner)
 
-Progress: [#####-----] 50% (1/2 plans)
+Progress: [##########] 100% (2/2 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 6
-- Average duration: 8min
-- Total execution time: 0.8 hours
+- Total plans completed: 7
+- Average duration: 7min
+- Total execution time: 0.9 hours
 
 **By Phase:**
 
@@ -29,11 +29,11 @@ Progress: [#####-----] 50% (1/2 plans)
 |-------|-------|-------|----------|
 | 01-runtime-core-pipeline | 3/3 | 24min | 8min |
 | 02-image-acquisition | 2/2 | 19min | 10min |
-| 03-complete-user-loop | 1/2 | 4min | 4min |
+| 03-complete-user-loop | 2/2 | 9min | 5min |
 
 **Recent Trend:**
-- Last 5 plans: 8min, 5min, 12min, 7min, 4min
-- Trend: improving
+- Last 5 plans: 5min, 12min, 7min, 4min, 5min
+- Trend: stable
 
 *Updated after each plan completion*
 
@@ -64,6 +64,7 @@ Recent decisions affecting current work:
 - [03-01]: Error mapping at UI layer (not ViewModel) for separation of concerns
 - [03-01]: imagePath required on ResultScreen -- HomeScreen handles all input source selection
 - [03-01]: Router redirects to /home if path query param missing (guard against malformed navigation)
+- [03-02]: AsyncValue.value used instead of valueOrNull (not available in Riverpod 3.2.1)
 
 ### Pending Todos
 
@@ -79,5 +80,5 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-03-18
-Stopped at: Completed 03-01-PLAN.md (ResultScreen polish). Next: 03-02-PLAN.md.
+Stopped at: Completed 03-02-PLAN.md (thermal monitoring). Phase 3 complete. All 3 phases done.
 Resume file: None
