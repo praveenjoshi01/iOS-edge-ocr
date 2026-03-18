@@ -1,7 +1,9 @@
+import 'package:edge_veda/edge_veda.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../runtime/edge_veda_runtime.dart';
+import '../../../runtime/thermal_monitor.dart';
 import '../data/ocr_service.dart';
 import '../domain/ocr_state.dart';
 
@@ -44,20 +46,31 @@ class OcrViewModel extends _$OcrViewModel {
         return;
       }
 
-      // 2. Transition to preprocessing state
+      // 2. Thermal gate: block inference when device is critically hot
+      try {
+        final thermalState = await TelemetryService().getThermalState();
+        if (shouldBlockInference(thermalState)) {
+          state = OcrState.error(thermalMessage(thermalState));
+          return;
+        }
+      } catch (_) {
+        // Thermal check failed (simulator, etc.) -- proceed anyway
+      }
+
+      // 3. Transition to preprocessing state
       state = const OcrState.preprocessing();
 
-      // 3. Create OCR service with runtime reference
+      // 4. Create OCR service with runtime reference
       final runtimeNotifier = ref.read(edgeVedaRuntimeProvider.notifier);
       final ocrService = OcrService(runtime: runtimeNotifier);
 
-      // 4. Transition to inferring state
+      // 5. Transition to inferring state
       state = const OcrState.inferring();
 
-      // 5. Run full pipeline: preprocess -> prompt -> infer
+      // 6. Run full pipeline: preprocess -> prompt -> infer
       final result = await ocrService.extractText(pickedFile.path);
 
-      // 6. Display result
+      // 7. Display result
       state = OcrState.complete(result);
     } catch (e) {
       state = OcrState.error(e.toString());
@@ -73,6 +86,17 @@ class OcrViewModel extends _$OcrViewModel {
   /// State transitions: idle -> preprocessing -> inferring -> complete
   /// On error: any state -> error
   Future<void> extractFromPath(String imagePath) async {
+    // Thermal gate: block inference when device is critically hot
+    try {
+      final thermalState = await TelemetryService().getThermalState();
+      if (shouldBlockInference(thermalState)) {
+        state = OcrState.error(thermalMessage(thermalState));
+        return;
+      }
+    } catch (_) {
+      // Thermal check failed (simulator, etc.) -- proceed anyway
+    }
+
     state = const OcrState.preprocessing();
 
     try {
