@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'features/image_input/presentation/camera_screen.dart';
 import 'features/image_input/presentation/home_screen.dart';
 import 'features/image_input/presentation/preview_screen.dart';
-import 'features/ocr/presentation/ocr_test_screen.dart';
+import 'features/ocr/presentation/result_screen.dart';
 import 'features/onboarding/presentation/download_screen.dart';
 
 /// Root application widget with Material 3 theme and go_router navigation.
@@ -57,9 +57,11 @@ final _router = GoRouter(
       path: '/ocr',
       builder: (context, state) {
         final path = state.uri.queryParameters['path'];
-        return OcrTestScreen(
-          imagePath: path != null ? Uri.decodeComponent(path) : null,
-        );
+        if (path == null) {
+          // imagePath is required -- redirect to home if missing.
+          return const HomeScreen();
+        }
+        return ResultScreen(imagePath: Uri.decodeComponent(path));
       },
     ),
   ],
