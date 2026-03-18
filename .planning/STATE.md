@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-03-16)
 
 **Core value:** Instant, private text extraction from any image -- entirely offline on the user's iPhone.
-**Current focus:** Phase 2 complete. All image acquisition flows wired. Ready for Phase 3.
+**Current focus:** Phase 3 in progress. ResultScreen polished with copy, error handling, empty-result state.
 
 ## Current Position
 
-Phase: 2 of 3 (Image Acquisition) -- COMPLETE
-Plan: 2 of 2 complete in current phase
-Status: Phase 2 complete, ready for Phase 3 (User Loop)
-Last activity: 2026-03-17 -- Plan 02-02 executed (camera, gallery, files, OCR wiring)
+Phase: 3 of 3 (Complete User Loop)
+Plan: 1 of 2 complete in current phase
+Status: Executing Phase 3 -- Plan 03-01 complete, Plan 03-02 next
+Last activity: 2026-03-18 -- Plan 03-01 executed (ResultScreen with copy, errors, empty-result, retry)
 
-Progress: [##########] 100% (2/2 plans)
+Progress: [#####-----] 50% (1/2 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 5
-- Average duration: 9min
-- Total execution time: 0.7 hours
+- Total plans completed: 6
+- Average duration: 8min
+- Total execution time: 0.8 hours
 
 **By Phase:**
 
@@ -29,10 +29,11 @@ Progress: [##########] 100% (2/2 plans)
 |-------|-------|-------|----------|
 | 01-runtime-core-pipeline | 3/3 | 24min | 8min |
 | 02-image-acquisition | 2/2 | 19min | 10min |
+| 03-complete-user-loop | 1/2 | 4min | 4min |
 
 **Recent Trend:**
-- Last 5 plans: 11min, 8min, 5min, 12min, 7min
-- Trend: stable/improving
+- Last 5 plans: 8min, 5min, 12min, 7min, 4min
+- Trend: improving
 
 *Updated after each plan completion*
 
@@ -60,6 +61,9 @@ Recent decisions affecting current work:
 - [02-02]: HomeScreen converted to ConsumerStatefulWidget for async import state management
 - [02-02]: OcrTestScreen uses addPostFrameCallback to auto-start extraction without state-during-build
 - [02-02]: PermissionService exposes cameraPermission/photosPermission getters for abstraction
+- [03-01]: Error mapping at UI layer (not ViewModel) for separation of concerns
+- [03-01]: imagePath required on ResultScreen -- HomeScreen handles all input source selection
+- [03-01]: Router redirects to /home if path query param missing (guard against malformed navigation)
 
 ### Pending Todos
 
@@ -74,6 +78,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-03-17
-Stopped at: Phase 2 complete. Ready for Phase 3 (User Loop).
+Last session: 2026-03-18
+Stopped at: Completed 03-01-PLAN.md (ResultScreen polish). Next: 03-02-PLAN.md.
 Resume file: None
